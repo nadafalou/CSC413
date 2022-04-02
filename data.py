@@ -16,6 +16,7 @@ def readData(path, X, T):
     """
     with open(path, newline='', encoding='utf-8') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='\"')
+        spamreader.__next__()  # Skip header row
         for row in spamreader:
             words = row[1].split()
             t = 0 if row[2] == 'real' else 1
@@ -24,9 +25,9 @@ def readData(path, X, T):
             X.append(sentence)
             T.append(t)
 
-readData("data/Constrain_Train.csv", Xtrain, Ttrain)
-readData("data/Constrain_Val.csv", Xvalid, Tvalid)
-readData("data/Constrain_Test.csv", Xtest, Ttest)
+readData("data/Constraint_Train.csv", Xtrain, Ttrain)
+readData("data/Constraint_Val.csv", Xvalid, Tvalid)
+readData("data/english_test_with_labels.csv", Xtest, Ttest)
 
 # A list of all the words in the data set. We will assign a unique
 # identifier for each of these words.
@@ -57,6 +58,7 @@ def convert_words_to_indices(sents):
 
 # Convert words to indices in X data.
 # Import these into the other modules, as well as vocab_itos and vocab_stoi as you see fit
+
 Xtrain = convert_words_to_indices(Xtrain)
 Ttrain = np.array(Ttrain)
 Xvalid = convert_words_to_indices(Xvalid)
