@@ -1,5 +1,6 @@
 import csv
 import numpy as np
+import torch
 
 tweets = []
 Xtrain, Ttrain = [], []
@@ -54,14 +55,22 @@ def convert_words_to_indices(sents):
     for i in range(len(sents)):
         for j in range(len(sents[i])):
             sents[i][j] = vocab_stoi[sents[i][j].lower()]
+        #sents[i] = torch.tensor(sents[i])
     return sents
 
 # Convert words to indices in X data.
 # Import these into the other modules, as well as vocab_itos and vocab_stoi as you see fit
 
 Xtrain = convert_words_to_indices(Xtrain)
-Ttrain = np.array(Ttrain)
+Ttrain = torch.tensor(Ttrain)
 Xvalid = convert_words_to_indices(Xvalid)
-Tvalid = np.array(Tvalid)
+Tvalid = torch.tensor(Tvalid)
 Xtest = convert_words_to_indices(Xtest)
-Ttest = np.array(Ttest)
+Ttest = torch.tensor(Ttest)
+
+print(Xtrain[*[1,2,3]])
+print(Ttrain[:10])
+print(Xvalid[:10])
+print(Tvalid[:10])
+print(Xtest[:10])
+print(Ttest[:10])
