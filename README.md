@@ -53,7 +53,7 @@ We used data gathered by [Patwa et. al (2021)](https://arxiv.org/ftp/arxiv/paper
 
 The dataset consists of around 10,700 tweets labeled real or fake depending on the information contained. We have ensured that each of the train, validation and test sets contains a near equal number of each class (fake and real) to prevent the possibility of training, validateing and testing with biased data. 
 
-The average length of each tweet is 27 words with large variations of length of tweets (i.e. tweets of length greater than 27). The data contains 37,505 unique words, with 5,141 of them appearing in both real and fake tweets. The 10 most common words (note that we will talk about punctuation as words in the next section) with their _percentage_ frequencies are ('.', 6.96), ('the', 3.49), ('of', 2.32), ('https://t', 2.2), ('to', 2.07), ('in', 1.95), ('a', 1.53), ('and', 1.37), ('is', 1.03), ('for', 0.92). We have 27,140 unique words in the training dataset, with a total of 173,342 words, meaning there are 6 times the number of occurrences of a word compared to the number of words, ensuring variety of usage. With this, we can conclude that we have enough data.
+The average length of each tweet is 29 words and 138 characters, with some tweets being much longer. The data contains 37,505 unique words, with 5,141 of them appearing in both real and fake tweets. The 10 most common words (note that we will talk about punctuation as words in the next section) with their _percentage_ frequencies are ('.', 6.79), ('the', 3.37), ('#', 2.27), ('of', 2.17), ('https://t', 2.11), ('to', 2.0), ('in', 1.87), ('a', 1.52), ('and', 1.37), ('is', 1.03). We have 19,092 unique words in the training dataset, with a total of 160,198 words, meaning there are 8 times the number of occurrences of a word compared to the number of words, ensuring variety of usage of words. With this, we can conclude that we have enough data.
 
 ##### Data Transformation
 
@@ -61,7 +61,9 @@ The data was transformed by opening each of the training, valiation, and testing
 
 During the splitting of sentence strings into lists of word strings, punctation was separated and counted as words. This was done because official statements in tweets, a.k.a. real news, are generally well-written, while it is common to find tweets with fake news to have poor punctation or exaggeration, such as multiple exclamation marks. Thus, we felt the need to keep punctuation in the tweets as they may contribute to the prediction of whether the information is real or fake.
 
-According to [Patwa et. al (2021)](https://arxiv.org/ftp/arxiv/papers/2011/2011.03327.pdf), most of the dataset consisted of tweets, but some datapoints were general social media posts. In our model, we padded inputs to have same length, which is why we decided to remove all non-tweet datapoints (i.e. datapoints with more than 280 charachters) to improve our training runtime and efficiency. 
+According to [Patwa et. al (2021)](https://arxiv.org/ftp/arxiv/papers/2011/2011.03327.pdf), most of the dataset consisted of tweets, but some datapoints were general social media posts. In our model, we padded inputs to have same length, which is why we decided to remove all non-tweet datapoints (i.e. datapoints with more than 280 charachters) to improve our training runtime and efficiency. Removing tweets longer than 280 characters resulted in removing 816 tweets from the training data, leaving us with 5,604 datapoints to train on. Given the spike in efficiency, we determined that losing these datapoints is worth it. 
+
+Note: similar analyses were done on validation and test datasets and yeilded similar results. Exact statistics can be found in data.py.
 
 ##### Data Split
 
