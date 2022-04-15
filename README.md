@@ -59,14 +59,32 @@ During the splitting of sentence strings into lists of word strings, punctation 
 Additionally, words that appeared infrequently were replaced with "<low-freq-word>" to reduce the size of the vocabulary dictionary. This is to help with runtime and to reduce -- and not exceed the maximum -- amount of RAM needed while training the model. Finally, the extremely long sentences were removed from the dataset (few ones that were practically stray points) and all sentences were padded to match the length of the new longest sentence. Again, this was done to reduce computation time and to make inputs have similar format.
 
 ### Data Split
+
 The data was pre-split in the original dataset, into training (~60% of observations), validation (~20% of observations), and testing sets (~20% of observations). The data contains an almost even number of real (~52%) and fake (~48%) examples, with this ratio maintained in every dataset, to ensure the integrity of the model across training, validation, and testing.
 
-## Training Curve
+### Training Curve
 
-## Hyper Parameter Tuning
+### Hyper Parameter Tuning
 
 This was arguably one of the hardest and most time consuming tasks. To begin with, we had started off with some typical default values for our learning rate, weight decay, batch and embedding size. We had started off with a learning rate of 0.001, weight decay of 0.05, batch size of 32, embedding size of 284 and 7 epochs. After this value we felt our model was essentially flipping a coin. This was due to the fact that we had a training accuracy of about 89%, but our validation accuracy was approximately 51% constantly. This gave us an indication of overfitting, hence we increased our batch size, and increased our learning rate. To be on the safer side of things, we wanted to observe how our model would perform if we had trained with more epochs, so we increased our epochs to a constant value of 25.
 FINISH THE REST HERE
 
-## Results 
+### Quantitative Measures
+
+
+
+### Results 
+
 A very simple baseline model was implemented to compare to. The baseline model creates a dictionary of all the words that appear in the training set and counts the number of times the word appears in fake and real tweets. Thus after training, the probability of each word being in a real or fake sentence can be determined based on the training data. To predict, the average probablility of all the words in the sentence being real (or fake) is calculated, and the one with higher prbabililty is the prediction. The baseline model had a training accuracy of 81%, while the test accuracy was 51%. (Note that for the base model, there are no hyperparameters to tune and so the validation set was absorbed into the training set)
+
+### Ethical Considerations
+
+COVID-19 has affected our world quite greatly. Citizens across the world have suffered great losses which can be quite easily be explained by misinformation or by ignorance itself. By classifying fake news from real news, people can then use this to make more correctly informed decisions. 
+
+##### Unethical 
+
+Fake news detection is informational, however, it’s crucial to observe that the model is only as objective as the data we train on. In essence, it can be highly likely that the data we train on will be biased in some way, shape or form. Fortunately, there are articles that have been proven by a great number of credible sources and have been fact checked by science as well, but there are also other articles that cannot be proven using science. These articles can be manipulated to force a population of the world to believe a myth may be true about COVID-19, and that facts may be false (i.e. telling the population that masks trap the virus in your face making it easier to contract COVID-19). Hence, it is crucial to understand that this model can be used to manipulate a fraction of the world, if not then perhaps even the whole world. 
+
+##### Ethical
+
+With an unethical purpose, there will always be an ethical purpose. We can use this model and train on data specificly known to be scientifically true and scientifically false by organizations that come to unanimous decisons. Since science is a more objective topic than it is subjective, this will reduce the bias in our data which can help us believe that our model is more robust. A more robust model will then help the world be informed about COVID-19 and spread awareness in a confident manner. This will create a chain that hopefully will help us tackle COVID-19 in multiple angles.
