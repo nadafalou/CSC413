@@ -10,18 +10,18 @@ Fake news is widespread and harmful, as it misleads people and is often used for
 ##### Type of Task
 
 The task is a binary classification problem, were input sequences of words are classified as 'real' or 'fake' information, and then compared to their label to determine the accuracy of those predictions. Our model is a Transformer model with a Glove Embedding layer, a positional encoding layer with dropout, 2-attentional and feed-forward layers, followed by a linear layer.
-s
+
 ##### Transformer: Input Embeddings
 
 First we will look at the input embeddings. We take in an article/tweet in the form of a list of words and assign each word it's own unique integer. Once we have our list of integers, we will pass this through our embedding layer, which uses pretrained Glove Embeddings to transform the integers into a vector representation to derive a distance from each word.
 
 ##### Transformer: Positional Embeddings
 
-We will also have a positional embedding which will assign values to each word in the article. This is done by putting the odd indices in a cosine function and the even indices in a sine function, in order to model both relative and absolute position in a sentence, then add it to the embeddings from the previous layer.
+We will also have a fixed positional embedding which will assign values to each word in the article. This is done by putting the odd indices in a cosine function and the even indices in a sine function, in order to model both relative and absolute position in a sentence, then add it to the embeddings from the previous layer.
 
 ##### Transformer: Multi-Head Attention
 
-Next, we will add multi-head attention. In this aspect of the model, we take a vector of queries, keys, and values to essentially determine which set of keys compares strongly to the set of queries using a dot product. The larger this product the more compatible the queries and keys are for our sequence of words. The dot product vector is placed into a vector and normalized so that the dot products are non-negative. This will output a vector with a representation of a word in a position (i.e. a linear combination of the dot products in each row). This is done for N-attention heads, which has N copies of queries, keys, and values, then concatenates the attention heads, and dot products it with a final matrix to transform the output back into the embedding dimension.
+Next, we will add multi-head attention. In this aspect of the model, we take a vector of queries, keys, and values to essentially determine which set of keys compares strongly to the set of queries using a dot product. The larger this product the more compatible the queries and keys are for our sequence of words. The dot product vector is placed into a vector and normalized so that the dot products are non-negative. This will output a vector with a representation of a word in a position (i.e. a linear combination of the dot products in each row). This is done for 5-attention heads, which has 5 copies of queries, keys, and values, then concatenates the attention heads, and dot products it with a final matrix to transform the output back into the embedding dimension.
 
 ##### Transformer: Add & Norm
 
@@ -64,13 +64,13 @@ The average length of each post is 29 words and 138 characters, with some posts 
 
 ##### Data Transformation
 
-The data was transformed by opening each of the training, valiation, and testing datasets as a csvfiles, and reading each row as a string. The post (second column of each row) was split into a list of strings for each word, and the label (third column of the row) was converted to an integer (0 for 'real', 1 for 'fake'). The post was then stored in an X list applicable for the type of data (training, validation, and testing) as well as a master list of posts for all 3 datasets. The label was stored in a respective T list for the type of data. Then, using the master list of posts, a sorted list of all unique words in all datasets was created, and assigned indices for each word in alphabetical order in a dictionary. The X lists were then converted to lists of lists of indices using the dictionary, and the X and T lists were then converted to numpy arrays, to be usable by the neural network modules.
+The data was transformed by opening each of the training, valiation, and testing datasets as a csvfiles, and reading each row as a string. The post (second column of each row) was split into a list of strings for each word, and the label (third column of the row) was converted to an integer (0 for 'real', 1 for 'fake'). The post was then stored in an X list applicable for the type of data (training, validation, and testing) as well as a master list of posts for all 3 datasets. The label was stored in a respective T list for the type of data. Then, using the master list of posts, a sorted list of all unique words in all datasets was created, and assigned indices for each word in alphabetical order in a dictionary. The X lists were then converted to lists of lists of indices using the dictionary, padded with 0s on their right sides to account for variable input length, per the max length of each dataset. The X and T lists were then converted to numpy arrays, to be usable by the neural network modules.
 
-During the splitting of sentence strings into lists of word strings, punctation was separated and counted as words. This was done because official statements in posts, a.k.a. real news, are generally well-written, while it is common to find posts with fake news to have poor punctation or exaggeration, such as multiple exclamation marks. Thus, we felt the need to keep punctuation in the posts as they may contribute to the prediction of whether the information is real or fake.
+During the splitting of sentence strings into lists of word strings, punctuation was separated and counted as words. This was done because official statements in posts, a.k.a. real news, are generally well-written, while it is common to find posts with fake news to have poor punctuation or exaggeration, such as multiple exclamation marks. Thus, we felt the need to keep punctuation in the posts as they may contribute to the prediction of whether the information is real or fake.
 
-According to [Patwa et. al (2021)](https://arxiv.org/ftp/arxiv/papers/2011/2011.03327.pdf), most of the dataset consisted of posts, but some datapoints were general social media posts. In our model, we padded inputs to have same length, which is why we decided to remove all non-post datapoints (i.e. datapoints with more than 280 charachters) to improve our training runtime and efficiency. Removing posts longer than 280 characters resulted in removing 816 posts from the training data, leaving us with 5,604 datapoints to train on. Given the spike in efficiency, we determined that losing these datapoints is worth it.
+According to [Patwa et. al (2021)](https://arxiv.org/ftp/arxiv/papers/2011/2011.03327.pdf), most of the dataset consisted of posts, but some datapoints were general social media posts. In our model, we padded inputs to have same length, which is why we decided to remove all non-post datapoints (i.e. datapoints with more than 280 characters) to improve our training runtime and efficiency. Removing posts longer than 280 characters resulted in removing 816 posts from the training data, leaving us with 5,604 datapoints to train on. Given the spike in efficiency, we determined that losing these datapoints is worth it.
 
-Note: similar analyses were done on validation and test datasets and yeilded similar results. Exact statistics can be found in data.py.
+Note: similar analyses were done on validation and test datasets and yielded similar results. Exact statistics can be found in data.py.
 
 ##### Data Split
 
@@ -106,5 +106,5 @@ Fake news detection is informational, however it is crucial to observe that the 
 This project is brought to you by Joshua Fratarcangeli, Nada El-Falou, Raghav Sharma and Yash Dave. Overall, we "pair programmed" and worked synchronously on calls, switching around tasks and helping each other constantly. However, the general task split was as follows:
 - Joshua: data loading and exploration, model write-up
 - Nada: data pre-processing and exploration, write-up
-- Raghav: transfromer model design and implementation
+- Raghav: transformer model design and implementation
 - Yash: model training, write-up
