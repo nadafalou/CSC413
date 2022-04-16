@@ -3,7 +3,7 @@ import csv
 import numpy as np
 import torch
 
-tweets = []
+posts = []
 Xtrain, Ttrain = [], []
 Xvalid, Tvalid = [], []
 Xtest, Ttest = [], []
@@ -11,10 +11,10 @@ Xtest, Ttest = [], []
 
 def readData(path, X, T):
     """
-    Reads the csv from path, and outputs the list of words by appending the tweet to the tweets list, as well as X,
+    Reads the csv from path, and outputs the list of words by appending the post to the posts list, as well as X,
     and appending the label (0 for real, 1 for fake) to T.
     path - String: a path to the csv file where the data is located.
-    X - List[String]: The X list to store the tweets in.
+    X - List[String]: The X list to store the posts in.
     T - List[int]: The T list to store the labels in.
     """
     with open(path, newline='', encoding='utf-8') as csvfile:
@@ -26,11 +26,13 @@ def readData(path, X, T):
                 .replace('.', ' . ')\
                 .replace('!', ' ! ')\
                 .replace('?', ' ? ')\
-                .replace(';', ' ; ')
+                .replace(';', ' ; ')\
+                .replace('@', ' @ ')\
+                .replace('#', ' # ')
             words = row[1].split()
             t = 0 if row[2] == 'real' else 1
             sentence = [word.lower() for word in words]
-            tweets.append(sentence)
+            posts.append(sentence)
             X.append(sentence)
             T.append(t)
 
@@ -42,11 +44,11 @@ readData("data/english_test_with_labels.csv", Xtest, Ttest)
 MAX_ALLOWED = 100
 maxim = 0
 maxSent = ""
-# tweets = [] # temp
+# posts = [] # temp
 vocab = {}
 for dataset in (Xtrain, Xvalid, Xtest):
     for sent in dataset:
-        # tweets.append(sent) # temp
+        # posts.append(sent) # temp
         for w in sent:
             vocab[w] = 1 if vocab.get(w) is None else vocab[w] + 1
         if len(sent) > maxim and len(sent) <= MAX_ALLOWED:
@@ -57,7 +59,7 @@ print("old vocab length: ", len(vocab))  # temp
 
 # A list of all the words in the data set. We will assign a unique
 # identifier for each of these words.
-# vocab = sorted(list(set([w for s in tweets for w in s])))  # OLD
+# vocab = sorted(list(set([w for s in posts for w in s])))  # OLD
 # remove words with low freq (i.e. with freq = 1 or 2)
 vocab_temp = []
 for w in vocab:
@@ -109,7 +111,7 @@ Tvalid = torch.tensor(Tvalid)
 Xtest = convert_words_to_indices(Xtest)
 Ttest = torch.tensor(Ttest)
 
-print(Xtrain[*[1,2,3]])
+print(Xtrain[*[1, 2, 3]])
 print(Ttrain[:10])
 print(Xvalid[:10])
 print(Tvalid[:10])

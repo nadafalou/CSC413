@@ -1,15 +1,15 @@
 # CSC413 - Final Project
-Neural Networks and Deep Learning: final group project
+This project is a final submission for the University of Toronto course, CSC413: Neural Networks and Deep Learning.
 
 ### The Model: Introduction
 
 ##### Brief Overview
 
-The purpose of our assignment is to create a Transformer model, using only the encoder block of the transformer, which takes in a tweet/news article related to the COVID-19 topic and predicts whether the article is "real" or "fake".
+Fake news is widespread and harmful, as it misleads people and is often used for revenue. Our model’s task is to take a post, which is represented by a sequence of English words and emojis, and then perform binary classification to determine whether the post is presenting real or fake information related to COVID-19.
 
 ##### Type of Task
 
-The task is a binary classification problem, were input sequences of words are classified as 'real' or 'fake' information, and then compared to their label to determine the accuracy of those predictions. Our model is a Transformer model with a Glove Embedding layer, a positional encoding layer with dropout, N-attentional and feed-forward layers, followed by a linear layer.
+The task is a binary classification problem, were input sequences of words are classified as 'real' or 'fake' information, and then compared to their label to determine the accuracy of those predictions. Our model is a Transformer model with a Glove Embedding layer, a positional encoding layer with dropout, 2-attentional and feed-forward layers, followed by a linear layer.
 s
 ##### Transformer: Input Embeddings
 
@@ -53,19 +53,24 @@ ONCE MODEL IS COMPLETE
 ### The Data
 
 ##### Data Source
-Our data source is from a different model with the same task, uploaded at https://github.com/diptamath/covid_fake_news. The paper on the dataset itself is https://arxiv.org/ftp/arxiv/papers/2011/2011.03327.pdf.
+
+We used data gathered by [Patwa et. al (2021)](https://arxiv.org/ftp/arxiv/papers/2011/2011.03327.pdf) in an effort to "fight an infodemic". The data files are from a different machine learning model uploaded on a [GitHub repo](https://github.com/diptamath/covid_fake_news) with the same task, which uses the MIT license and specifies that we are allowed to use a copy of the software without restriction, free of charge.
 
 ##### Data Summary
 
-The dataset consists of 10,700 tweets, split into two group labels for whether the information is real or fake. The data contains 37,505 unique words, 5,141 of theare in both the real and fake data groups. The average length of each tweet is 27 words with large variations of length of tweets (i.e. tweets of length greater than 27). We have ensured that each set contains a near equal number of each class to prevent the possibility of training with biased data. The 10 most common words with their frequencies are (the, 6919), (of, 4610), (to, 4108), (in, 3853), (a, 3037), (and, 2710), (is, 2030), (for, 1819), (cases, 1505), and (are, 1496). We have 27,140 unique words in the training dataset, along with 173,342 total words, meaning there are 6 times the number of occurrences of a word compared to the number of words, ensuring variety of its usage. With this, we can conclude that we have enough data.
+The dataset consists of around 10,700 posts labeled real or fake depending on the information contained. We have ensured that each of the train, validation and test sets contains a near equal number of each class (fake and real) to prevent the possibility of training, validateing and testing with biased data.
+
+The average length of each post is 29 words and 138 characters, with some posts being much longer. The data contains 37,505 unique words, with 5,141 of them appearing in both real and fake posts. The 10 most common words (note that we will talk about punctuation as words in the next section) with their _percentage_ frequencies are ('.', 6.79), ('the', 3.37), ('#', 2.27), ('of', 2.17), ('https://t', 2.11), ('to', 2.0), ('in', 1.87), ('a', 1.52), ('and', 1.37), ('is', 1.03). We have 19,092 unique words in the training dataset, with a total of 160,198 words, meaning there are 8 times the number of occurrences of a word compared to the number of words, ensuring variety of usage of words. With this, we can conclude that we have enough data.
 
 ##### Data Transformation
 
-The data was transformed by opening each of the training, valiation, and testing datasets as a csvfile, and reading each row as a string. The tweet (second column of each row) was split into a list of strings for each word, and the label (third column of the row) was converted to an integer (0 for 'real', 1 for 'fake'). The tweet was then stored in an X list applicable for the type of data (training, validation, and testing) as well as a master list of tweets for all 3 datasets. The label was stored in a respective T list for the type of data. Then, using the master list, a sorted list of all unique words in all datasets was created, and assigned indices for each word in alphabetical order in a dictionary. The X lists were then converted to lists of lists of indices using the dictionary, and the X and T lists were then converted to numpy arrays, to be usable by the neural network modules.
+The data was transformed by opening each of the training, valiation, and testing datasets as a csvfiles, and reading each row as a string. The post (second column of each row) was split into a list of strings for each word, and the label (third column of the row) was converted to an integer (0 for 'real', 1 for 'fake'). The post was then stored in an X list applicable for the type of data (training, validation, and testing) as well as a master list of posts for all 3 datasets. The label was stored in a respective T list for the type of data. Then, using the master list of posts, a sorted list of all unique words in all datasets was created, and assigned indices for each word in alphabetical order in a dictionary. The X lists were then converted to lists of lists of indices using the dictionary, and the X and T lists were then converted to numpy arrays, to be usable by the neural network modules.
 
-During the splitting of sentence strings into lists of word strings, punctation was separated and counted as words. This was done because official statements in tweets, a.k.a. real news, are generally well-written, while it is common to find tweets with fake news to have poor punctation or exaggeration, such as multiple exclamation marks.
+During the splitting of sentence strings into lists of word strings, punctation was separated and counted as words. This was done because official statements in posts, a.k.a. real news, are generally well-written, while it is common to find posts with fake news to have poor punctation or exaggeration, such as multiple exclamation marks. Thus, we felt the need to keep punctuation in the posts as they may contribute to the prediction of whether the information is real or fake.
 
-Additionally, words that appeared infrequently were replaced with "<low-freq-word>" to reduce the size of the vocabulary dictionary. This is to help with runtime and to reduce -- and not exceed the maximum -- amount of RAM needed while training the model. Finally, the extremely long sentences were removed from the dataset (few ones that were practically stray points) and all sentences were padded to match the length of the new longest sentence. Again, this was done to reduce computation time and to make inputs have similar format.
+According to [Patwa et. al (2021)](https://arxiv.org/ftp/arxiv/papers/2011/2011.03327.pdf), most of the dataset consisted of posts, but some datapoints were general social media posts. In our model, we padded inputs to have same length, which is why we decided to remove all non-post datapoints (i.e. datapoints with more than 280 charachters) to improve our training runtime and efficiency. Removing posts longer than 280 characters resulted in removing 816 posts from the training data, leaving us with 5,604 datapoints to train on. Given the spike in efficiency, we determined that losing these datapoints is worth it.
+
+Note: similar analyses were done on validation and test datasets and yeilded similar results. Exact statistics can be found in data.py.
 
 ##### Data Split
 
@@ -88,18 +93,18 @@ FINISH THE REST HERE
 
 ### Results
 
-A very simple baseline model was implemented to compare to. The baseline model creates a dictionary of all the words that appear in the training set and counts the number of times the word appears in fake and real tweets. Thus after training, the probability of each word being in a real or fake sentence can be determined based on the training data. To predict, the average probablility of all the words in the sentence being real (or fake) is calculated, and the one with higher prbabililty is the prediction. The baseline model had a training accuracy of 81%, while the test accuracy was 51%. (Note that for the base model, there are no hyperparameters to tune and so the validation set was absorbed into the training set)
+A very simple baseline model was implemented to compare to. The baseline model creates a dictionary of all the words that appear in the training set and counts the number of times the word appears in fake and real posts. Thus after training, the probability of each word being in a real or fake sentence can be determined based on the training data. To predict, the average probablility of all the words in the sentence being real (or fake) is calculated, and the one with higher prbabililty is the prediction. The baseline model had a training accuracy of 81%, while the test accuracy was 51%. (Note that for the base model, there are no hyperparameters to tune and so the validation set was absorbed into the training set)
 
 ### Ethical Considerations
 
-COVID-19 has affected our world quite greatly. Citizens across the world have suffered great losses which can be quite easily be explained by misinformation or by ignorance itself. By classifying fake news from real news, people can then use this to make more correctly informed decisions.
+COVID-19 has affected our world quite greatly. As mentioned before, fake news is harmful as it can mislead the general public into making decisions that benefit groups, such as pharmaceutical companies, political parties, etc. By classifying fake news from real news, people can then use this to make more correctly informed decisions.
 
-##### Unethical
-
-Fake news detection is informational, however, it’s crucial to observe that the model is only as objective as the data we train on. In essence, it can be highly likely that the data we train on will be biased in some way, shape or form. Fortunately, there are articles that have been proven by a great number of credible sources and have been fact checked by science as well, but there are also other articles that cannot be proven using science. These articles can be manipulated to force a population of the world to believe a myth may be true about COVID-19, and that facts may be false (i.e. telling the population that masks trap the virus in your face making it easier to contract COVID-19). Hence, it is crucial to understand that this model can be used to manipulate a fraction of the world, if not then perhaps even the whole world.
-
-##### Ethical
-
-With an unethical purpose, there will always be an ethical purpose. We can use this model and train on data specificly known to be scientifically true and scientifically false by organizations that come to unanimous decisons. Since science is a more objective topic than it is subjective, this will reduce the bias in our data which can help us believe that our model is more robust. A more robust model will then help the world be informed about COVID-19 and spread awareness in a confident manner. This will create a chain that hopefully will help us tackle COVID-19 in multiple angles.
+Fake news detection is informational, however it is crucial to observe that the model is only as objective as the data we train it on. If the data we train it on is biased towards a certain ideology or opinion, then determining what is real or fake is subjective, which again can manipulate or misinform others. We can try to be objective by labelling the datasets according to credible scientific sources, but even those sometimes conflict, especially when it comes to new theories and experiments. In terms of COVID-19, this can materialize in things that groups of medical experts themselves disagree on, leading to whoever manually labeled the data to take one opinion over the other and causing the data to be biased.
 
 ### Authors
+
+This project is brought to you by Joshua Fratarcangeli, Nada El-Falou, Raghav Sharma and Yash Dave. Overall, we "pair programmed" and worked synchronously on calls, switching around tasks and helping each other constantly. However, the general task split was as follows:
+- Joshua: data loading and exploration, model write-up
+- Nada: data pre-processing and exploration, write-up
+- Raghav: transfromer model design and implementation
+- Yash: model training, write-up
