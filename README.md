@@ -87,9 +87,11 @@ FINISH THE REST HERE
 
 ### Quantitative Measures
 
+For our model and data, calculating the accuracy is a reliable and reasonable quantitavive measure because we have approximately equal number of fake and real data in each of our training, validation and test sets. 
 
 ### Quantitative and Qualitative Results
 
+After tuning hyperparametres, we were able to obtain a training accuracy of ~99.9%, and a validation accuracy of ~91%. 
 
 ### Results
 

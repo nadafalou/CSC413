@@ -26,9 +26,7 @@ def readData(path, X, T):
                 .replace('.', ' . ')\
                 .replace('!', ' ! ')\
                 .replace('?', ' ? ')\
-                .replace(';', ' ; ')\
-                .replace('@', ' @ ')\
-                .replace('#', ' # ')
+                .replace(';', ' ; ')
             words = row[1].split()
             t = 0 if row[2] == 'real' else 1
             sentence = [word.lower() for word in words]
