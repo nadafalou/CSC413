@@ -9,39 +9,42 @@ The purpose of our assignment is to create a Transformer model, using only the e
 
 ##### Type of Task
 
-It is clear from this brief description that our task is a binary classification task which has an input of _________ (sequence?).
-
+The task is a binary classification problem, were input sequences of words are classified as 'real' or 'fake' information, and then compared to their label to determine the accuracy of those predictions. Our model is a Transformer model with a Glove Embedding layer, a positional encoding layer with dropout, N-attentional and feed-forward layers, followed by a linear layer.
+s
 ##### Transformer: Input Embeddings
 
-First we will look at the input embeddings. We take in an article/tweet in the form of a list of words and assign each word it's own unique integer. Once we have our list of integers, we will pass this through our embedding layer.
+First we will look at the input embeddings. We take in an article/tweet in the form of a list of words and assign each word it's own unique integer. Once we have our list of integers, we will pass this through our embedding layer, which uses pretrained Glove Embeddings to transform the integers into a vector representation to derive a distance from each word.
 
 ##### Transformer: Positional Embeddings
 
-We will also have a positional embedding which will assign values to each word in the article. This is done by putting the odd indices in a cosine function and the even indices in a sine function.
+We will also have a positional embedding which will assign values to each word in the article. This is done by putting the odd indices in a cosine function and the even indices in a sine function, in order to model both relative and absolute position in a sentence, then add it to the embeddings from the previous layer.
 
 ##### Transformer: Multi-Head Attention
 
-Next, we will add multi-head attention. In this aspect of the model, we take a vector of queries, keys, and values to essentially determine which set of keys compares strongly to the set of queries using a dot product. The larger this product the more compatible the queries and keys are for our sequence of words. The dot product vector is placed into a vector and normalized so that the dot products are non-negative. This will output a vector with a representation of a word in a position (i.e. a linear combination of the dot products in each row).
+Next, we will add multi-head attention. In this aspect of the model, we take a vector of queries, keys, and values to essentially determine which set of keys compares strongly to the set of queries using a dot product. The larger this product the more compatible the queries and keys are for our sequence of words. The dot product vector is placed into a vector and normalized so that the dot products are non-negative. This will output a vector with a representation of a word in a position (i.e. a linear combination of the dot products in each row). This is done for N-attention heads, which has N copies of queries, keys, and values, then concatenates the attention heads, and dot products it with a final matrix to transform the output back into the embedding dimension.
 
 ##### Transformer: Add & Norm
 
-With our transformer model, we will apply a residual connection and normalize our layer after the Multi-Head Attnetion layer and the Forward Pass. IDK WHAT TO DO HERE BROOOOOOOOOOOOOOO
+After the multi-head attention sub-layer, the output is added to the input before the attentional layer and normalized to have 0 mean and variance 1, so as to reduce the effect of the gradient on the softmax function within the attentional and final layers being to small for extreme values. Then that output is passed to a feed-forward network consisting of two fully connected layers, with dropout. The feed-forward layer is then normalized with its own input and outputs just like the attentional layer.
 
-##### Transformer: Forward Pass
-
-In this layer, we will pass input values through a simple activation function. In our model, we use the default ReLU activation function.
 
 ##### Transformer: Linear and Softmax
 
-We will only be using the encoder in our model, we will not be using the decoder block. After the encoder block, we will then pass our information through a Linear layer and output the softmax of the Linear Layer
+The embeddings have their means taken in the embedding dimension, then passed to a linear layer to get the raw scores for binary classification.
 
-### Model Architecture w
 
-CAN SOMEONE DRAW AN IMAGE AND PASTE IT?
+##### Transformer: Forward pass
+
+The input of sequences of indices is transformed into a Glove embedding, then passed into a positional encoder. The output of that is then passed into N encoder layers. The attentional and feed-forward layers form a single encoder layer,  and there are a total of 2 encoder layers. The output of the encoder is then passed through the linear layer, to output the raw scores for each class. The softmax is taken to find the probabilities, and the argmax is taken to make a prediction on which class the input belongs to.
+
+### Model Architecture
+
+![](transformers.png)
 
 ### Model Parameters
 
-NEED TO DO THE MATH
+For our parameter calculations, we first list some of our hyperparameters. Our embedding size is 300, the attentional sublayers have 5 heads, and there are 2 Transformer encoder layers.
+The Glove embedding layer is from a pretrained pytorch module, so there are no parameters from it, and the Positional encoder is based on a fixed encoding, requiring no tunable weights. The Transformer encoder layer contains an attentional sub-layer, which has 5 heads, each with a key, query, and value weight matrices, with each of them of size 300 x 300, with a bias of size 300 each. Since we are using multi-head attention, there is also a weight matrix with dimension 300 x 300, with a bias of 300. The norm after this layer has a weight vector of 300, as well as a bias vector of 300. This creates 3 * 300 * 300 + 3 * 300 + (300)^2 + 300 + 300 + 300 = 361,800 parameters in the attentional sublayer. The feed-forward sublayer consists of two fully connected layers, one with 300 * 2048 weights and 2048 biases, and one with 2048 * 300 weights and 300 biases. After the feed-forward sublayer there is a normalization weight of size 300 as well as a bias of size 300, which results in the feed-forward sublayer totaling 1,231,748 parameters. There is a single linear layer after the transformer encoder with 300 * 2 weights and 2 biases. Thus there are 2 * (361,800 + 1,231,748) + 300 * 2 + 2 = 3,187,698 parameters.
 
 ### Model Prediction Examples
 
