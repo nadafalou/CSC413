@@ -138,6 +138,6 @@ In terms of the model, its classification of social media posts presenting real 
 
 This project is brought to you by Joshua Fratarcangeli, Nada El-Falou, Raghav Sharma, and Yash Dave. Overall, we "pair programmed" and worked synchronously on calls, switching around tasks and helping each other constantly. However, the general task split was as follows:
 - Joshua: data loading and exploration, model write-up
-- Nada: data pre-processing and exploration, model training, write-up
-- Raghav: Transformer model design and implementation, code debugging, write-up
-- Yash: model training and model, justification and quantitative/qualitative write-up
+- Nada: data pre-processing and exploration, model training, quantitative/qualitative and data write-up
+- Raghav: Transformer model design and implementation, code debugging, ethical considerations, model and data summary write-up
+- Yash: model training and model, justification and quantitative/qualitative and data write-up
