@@ -140,4 +140,4 @@ This project is brought to you by Joshua Fratarcangeli, Nada El-Falou, Raghav Sh
 - Joshua: data loading and exploration, model write-up
 - Nada: data pre-processing and exploration, model training, write-up
 - Raghav: Transformer model design and implementation, code debugging, write-up
-- Yash: model training, write-up
+- Yash: model training and model, justification and quantitative/qualitative write-up
